@@ -1,3 +1,4 @@
+package agenda;
 import java.util.Objects;
 
 public class Contacto {
@@ -28,7 +29,7 @@ public class Contacto {
 		if (getClass() != obj.getClass())
 			return false;
 		Contacto other = (Contacto) obj;
-		return Objects.equals(nombre, other.nombre) && Objects.equals(telefono, other.telefono);
+		return Objects.equals(telefono, other.telefono);
 	}
 	@Override
 	public String toString() {
