@@ -25,6 +25,8 @@ import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
+import javax.swing.border.EtchedBorder;
+import java.awt.Color;
 
 
 public class Agenda_Profesores extends JFrame {
@@ -34,8 +36,10 @@ public class Agenda_Profesores extends JFrame {
 	private JTextField textNombre;
 	private JTextField textSalario;
 	private final ButtonGroup GrupoTipoContrato = new ButtonGroup();
-	private JTable table;
+	private JTable tablaAgenda;
 	private ArrayList<Profesor>listaProfesor;
+	private JRadioButton rbFijo;
+	private JRadioButton rbTemporal;
 
 	/**
 	 * Launch the application.
@@ -101,17 +105,24 @@ public class Agenda_Profesores extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		contentPane.add(scrollPane, "cell 3 1 1 6,grow");
 		
-		table = new JTable();
-		scrollPane.setViewportView(table);
-		table.setModel(new DefaultTableModel(
+		tablaAgenda = new JTable();
+		scrollPane.setViewportView(tablaAgenda);
+		tablaAgenda.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
 			new String[] {
 				"DNI", "Nombre", "Salario", "Tipo de Contrato"
 			}
-		));
-		table.getColumnModel().getColumn(3).setPreferredWidth(99);
-		table.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		) {
+			Class[] columnTypes = new Class[] {
+				String.class, String.class, Double.class, String.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+		});
+		tablaAgenda.getColumnModel().getColumn(3).setPreferredWidth(99);
+		tablaAgenda.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		
 		JLabel lblSalario = new JLabel("Salario");
 		lblSalario.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -131,33 +142,46 @@ public class Agenda_Profesores extends JFrame {
 		contentPane.add(btnBuscar, "cell 2 3,alignx center");
 		
 		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new TitledBorder(null, "JPanel title", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Tipo Contrato", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		contentPane.add(panel_1, "cell 0 4,grow");
-		panel_1.setLayout(new MigLayout("", "[]", "[]"));
+		panel_1.setLayout(new MigLayout("", "[][]", "[]"));
 		
-		JRadioButton rbFijo = new JRadioButton("Fijo");
+		rbFijo = new JRadioButton("Fijo");
+		rbFijo.setSelected(true);
 		panel_1.add(rbFijo, "cell 0 0");
 		GrupoTipoContrato.add(rbFijo);
 		rbFijo.setFont(new Font("Tahoma", Font.BOLD, 16));
 		
-		JButton btnSalir = new JButton("Salir");
-		btnSalir.setFont(new Font("Tahoma", Font.BOLD, 20));
-		contentPane.add(btnSalir, "cell 2 4,alignx center");
-		
-		JPanel panel = new JPanel();
-		panel.setBorder(new TitledBorder(null, "JPanel title", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		contentPane.add(panel, "cell 0 5,grow");
-		panel.setLayout(new MigLayout("", "[grow]", "[]"));
-		
-		JRadioButton rbTemporal = new JRadioButton("Temporal");
-		panel.add(rbTemporal, "cell 0 0");
+		rbTemporal = new JRadioButton("Temporal");
+		panel_1.add(rbTemporal, "cell 1 0");
 		GrupoTipoContrato.add(rbTemporal);
 		rbTemporal.setFont(new Font("Tahoma", Font.BOLD, 16));
+		
+		JButton btnSalir = new JButton("Salir");
+		btnSalir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		btnSalir.setFont(new Font("Tahoma", Font.BOLD, 20));
+		contentPane.add(btnSalir, "cell 2 4,alignx center");
 	}
 
 	protected void mostrarProfesor() {
 		
-		
+		DefaultTableModel modelo = (DefaultTableModel) tablaAgenda.getModel();
+		modelo.setRowCount(0);
+		for(Profesor profesor: listaProfesor) {
+			String contrato = "Temporal";
+			if (profesor.isFijo()) {
+				contrato="Fijo";
+			}
+			Object fila[] = {
+					                 profesor.getDni(),profesor.getNombre(),profesor.getSalario()
+									,(profesor.isFijo()?"Fijo":"Temporal"))
+			};
+			modelo.addRow(fila);
+		}
 	}
 
 	protected void añadirProfesor() {
@@ -167,7 +191,13 @@ Profesor p= new Profesor();
 		p.setNombre(textNombre.getText());
 		p.setDni(textDni.getText());
 		p.setSalario(Double.parseDouble(textSalario.getText()));
-		//p.setFijo(Boolean.parseBoolean(GrupoTipoSalario.get));
+		/*if (rbFijo.isSelected()) {
+			p.setFijo(true);
+		} else {
+			p.setFijo(false);
+		}*/
+		p.setFijo(rbFijo.isSelected());
+		
 	
 		
 		listaProfesor.add(p);
