@@ -3,6 +3,16 @@ package profesor;
 import java.util.Objects;
 
 public class Profesor {
+	public Profesor(String dni, String nombre, double salario, boolean fijo) {
+		super();
+		Dni = dni;
+		this.nombre = nombre;
+		this.salario = salario;
+		this.fijo = fijo;
+	}
+	public Profesor() {
+		// TODO Esbozo de constructor generado automáticamente
+	}
 	String Dni;
 	public String getDni() {
 		return Dni;

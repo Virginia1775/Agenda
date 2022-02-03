@@ -18,6 +18,9 @@ import javax.swing.ButtonGroup;
 import javax.swing.border.TitledBorder;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import agenda.Contacto;
+
 import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -87,6 +90,9 @@ public class Agenda_Profesores extends JFrame {
 		JButton btnAñadir = new JButton("A\u00F1adir");
 		btnAñadir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				añadirProfesor();
+				mostrarProfesor();
 			}
 		});
 		btnAñadir.setFont(new Font("Tahoma", Font.BOLD, 20));
@@ -147,6 +153,25 @@ public class Agenda_Profesores extends JFrame {
 		panel.add(rbTemporal, "cell 0 0");
 		GrupoTipoContrato.add(rbTemporal);
 		rbTemporal.setFont(new Font("Tahoma", Font.BOLD, 16));
+	}
+
+	protected void mostrarProfesor() {
+		
+		
+	}
+
+	protected void añadirProfesor() {
+Profesor p= new Profesor();
+		
+
+		p.setNombre(textNombre.getText());
+		p.setDni(textDni.getText());
+		p.setSalario(Double.parseDouble(textSalario.getText()));
+		//p.setFijo(Boolean.parseBoolean(GrupoTipoSalario.get));
+	
+		
+		listaProfesor.add(p);
+		
 	}
 
 }
