@@ -10,6 +10,7 @@ import java.awt.Toolkit;
 import java.awt.Font;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
@@ -40,6 +41,8 @@ public class Agenda_Profesores extends JFrame {
 	private ArrayList<Profesor>listaProfesor;
 	private JRadioButton rbFijo;
 	private JRadioButton rbTemporal;
+	private JButton btnEliminar;
+	private JButton btnLimpiar;
 
 	/**
 	 * Launch the application.
@@ -70,7 +73,7 @@ public class Agenda_Profesores extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new MigLayout("", "[172.00][203.00][229.00][]", "[55.00][90.00][27.00,grow][38.00,grow][][][62.00]"));
+		contentPane.setLayout(new MigLayout("", "[172.00][203.00][229.00][]", "[55.00][90.00][27.00,grow][][38.00,grow][][][62.00]"));
 		
 		JLabel lblDni = new JLabel("DNI");
 		lblDni.setHorizontalAlignment(SwingConstants.CENTER);
@@ -103,7 +106,7 @@ public class Agenda_Profesores extends JFrame {
 		contentPane.add(btnAñadir, "cell 2 1,alignx center");
 		
 		JScrollPane scrollPane = new JScrollPane();
-		contentPane.add(scrollPane, "cell 3 1 1 6,grow");
+		contentPane.add(scrollPane, "cell 3 1 1 7,grow");
 		
 		tablaAgenda = new JTable();
 		scrollPane.setViewportView(tablaAgenda);
@@ -133,17 +136,40 @@ public class Agenda_Profesores extends JFrame {
 		contentPane.add(textSalario, "cell 1 2,growx");
 		textSalario.setColumns(10);
 		
-		JButton btnLimpiar = new JButton("Limpiar");
-		btnLimpiar.setFont(new Font("Tahoma", Font.BOLD, 20));
-		contentPane.add(btnLimpiar, "cell 2 2,alignx center");
+	    btnEliminar = new JButton("Eliminar");
+	    btnEliminar.addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {
+	    		limpiarDatos();
+	    	}
+	    });
+		btnEliminar.setFont(new Font("Tahoma", Font.BOLD, 20));
+		contentPane.add(btnEliminar, "cell 2 2,alignx center");
+		
+		btnLimpiar = new JButton("Limpiar");
+		btnLimpiar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textDni.setText(null);
+				textNombre.setText(null);
+				textSalario.setText(null);
+				
+				
+			}
+		});
+		btnLimpiar.setFont(new Font("Tahoma", Font.BOLD, 18));
+		contentPane.add(btnLimpiar, "cell 2 3,alignx center");
 		
 		JButton btnBuscar = new JButton("Buscar");
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				buscarDni();
+			}
+		});
 		btnBuscar.setFont(new Font("Tahoma", Font.BOLD, 20));
-		contentPane.add(btnBuscar, "cell 2 3,alignx center");
+		contentPane.add(btnBuscar, "cell 2 4,alignx center");
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Tipo Contrato", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		contentPane.add(panel_1, "cell 0 4,grow");
+		contentPane.add(panel_1, "cell 0 5,grow");
 		panel_1.setLayout(new MigLayout("", "[][]", "[]"));
 		
 		rbFijo = new JRadioButton("Fijo");
@@ -164,7 +190,35 @@ public class Agenda_Profesores extends JFrame {
 			}
 		});
 		btnSalir.setFont(new Font("Tahoma", Font.BOLD, 20));
-		contentPane.add(btnSalir, "cell 2 4,alignx center");
+		contentPane.add(btnSalir, "cell 2 5,alignx center");
+	}
+
+	protected void buscarDni() {
+		Profesor p = new Profesor();
+		p.setDni(textDni.getText());
+		int indice = listaProfesor.indexOf(p);
+		if (indice==-1) {
+			JOptionPane.showMessageDialog(null, "DNI no encontrado");
+		} else {
+			p=listaProfesor.get(indice);
+			textNombre.setText(p.getNombre());
+			textSalario.setText(""+p.getSalario());
+			GrupoTipoContrato.clearSelection();
+			if (p.isFijo()) {
+				rbFijo.setSelected(true);
+			} else {
+				rbTemporal.setSelected(true);
+			}
+			
+		}
+	}
+
+	protected void limpiarDatos() {
+		int fila=tablaAgenda.getSelectedRow();
+		listaProfesor.remove(fila);
+		DefaultTableModel modelo = (DefaultTableModel) tablaAgenda.getModel();
+		modelo.removeRow(fila);
+		
 	}
 
 	protected void mostrarProfesor() {
@@ -178,14 +232,14 @@ public class Agenda_Profesores extends JFrame {
 			}
 			Object fila[] = {
 					                 profesor.getDni(),profesor.getNombre(),profesor.getSalario()
-									,(profesor.isFijo()?"Fijo":"Temporal"))
+									, contrato
 			};
 			modelo.addRow(fila);
 		}
 	}
 
 	protected void añadirProfesor() {
-Profesor p= new Profesor();
+         Profesor p= new Profesor();
 		
 
 		p.setNombre(textNombre.getText());

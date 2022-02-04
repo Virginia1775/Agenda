@@ -41,9 +41,11 @@ public class Profesor {
 	public void setFijo(boolean fijo) {
 		this.fijo = fijo;
 	}
+
+	
 	@Override
 	public int hashCode() {
-		return Objects.hash(Dni, fijo, nombre, salario);
+		return Objects.hash(Dni);
 	}
 	@Override
 	public boolean equals(Object obj) {
@@ -54,8 +56,7 @@ public class Profesor {
 		if (getClass() != obj.getClass())
 			return false;
 		Profesor other = (Profesor) obj;
-		return Objects.equals(Dni, other.Dni) && fijo == other.fijo && Objects.equals(nombre, other.nombre)
-				&& Double.doubleToLongBits(salario) == Double.doubleToLongBits(other.salario);
+		return Objects.equals(Dni, other.Dni);
 	}
 	@Override
 	public String toString() {
